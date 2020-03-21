@@ -20,6 +20,7 @@ class WebDriver(metaclass=Singleton):
             options=options)
         self.driver.run_js = self.run_js
 
+
     def run_js(self,func,*args,script="query.js"):
         """
         调用avascript文件内的函数
@@ -134,4 +135,18 @@ class WebDriver(metaclass=Singleton):
         self.logger.info("BROWSER SLEEP: " + str(sleep_time))
         time.sleep(sleep_time)
 
-
+    def open(self,url):
+        self.logger.info("OPEN NEW TAP: " + url)
+        script = 'window.open("{}")'.format(url)
+        self.driver.execute_script(script)
+        #移动句柄，对新打开页面进行操作
+        # self.driver.switch_to_window(driver.window_handles[1])
+        # #具体操作
+        # driver.find_element_by_xpath("")
+        # #关闭该新打开的页面
+        # driver.close()
+        # #不关闭，要移动到上一个页面，我们要移动句柄
+        # driver.switch_to_window(driver.window_handles[0])
+    def delete_all_cookies(self):
+        self.logger.info("CLEAR ALL COOKIES")
+        self.driver.delete_all_cookies()

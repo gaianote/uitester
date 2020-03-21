@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
   name = "uitester",
-  version = "0.1",
+  version = "0.2",
   description = "package description.",
   long_description = read("README.rst"),
   classifiers =  ['License :: OSI Approved :: MIT License','Programming Language :: Python','Intended Audience :: Developers','Operating System :: OS Independent'],

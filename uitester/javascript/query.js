@@ -11,8 +11,9 @@ baseY = document.documentElement.scrollTop
   //判断元素是否为最高层元素
   var isTop = function(elem){
       var rect = elem.getBoundingClientRect()
+      console.log("rect",rect)
       //如果四角任意坐标为0，则其不存在于屏幕之中
-      if(!(rect.left && rect.right && rect.bottom && rect.top)){
+      if(rect.left == 0 && rect.right  == 0 && rect.bottom  == 0 && rect.top == 0){
         return false
       }
 

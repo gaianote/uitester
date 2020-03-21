@@ -4,7 +4,8 @@ import time
 
 
 class UiTester(object):
-
+    def init(self):
+        print(123)
     def start(self,filename):
         os.system("pytest " + filename)
 
