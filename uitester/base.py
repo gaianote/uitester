@@ -7,14 +7,18 @@ from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.common.keys import Keys
 from .common import Logger,data,Singleton,timethis
 from .element import WebElement
+from browsermobproxy import Server
 
 class WebDriver(metaclass=Singleton):
 
     def __init__(self):
-        options = webdriver.ChromeOptions()
-        options.add_argument("--start-maximized")
-        options.add_experimental_option('excludeSwitches', ['enable-automation'])
+
         self.logger = Logger("pywebdriver")
+
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option('excludeSwitches', ['enable-automation'])
+        self.start_server()
+        options.add_argument('--proxy-server={0}'.format(self.proxy.proxy))
         self.driver = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub',
             desired_capabilities=DesiredCapabilities.CHROME,
             options=options)
@@ -129,6 +133,8 @@ class WebDriver(metaclass=Singleton):
     def quit(self):
         self.logger.info("BROWSER CLOSE")
         data.is_quit = True
+        self.server.stop()
+        # ps -ef|grep browsermob|grep -v grep|awk '{print $2}'|xargs kill -9
         self.driver.quit()
 
     def sleep(self,sleep_time):
@@ -150,3 +156,23 @@ class WebDriver(metaclass=Singleton):
     def delete_all_cookies(self):
         self.logger.info("CLEAR ALL COOKIES")
         self.driver.delete_all_cookies()
+
+    def start_server(self):
+        basedir = os.path.dirname(os.path.abspath(__file__))
+        server_path = os.path.join(basedir,"bin","browsermob-proxy-2.1.4","bin","browsermob-proxy")
+        self.server = Server(server_path)
+        self.server.start()
+        self.proxy = self.server.create_proxy()
+        self.proxy.new_har('req',options={'captureHeaders': True, 'captureContent': True, 'captureBinaryContent': True})
+        self.logger.info("PROXY START :" + self.proxy.proxy)
+
+    def get_response(self):
+        self.proxy.wait_for_traffic_to_stop(1, 60)
+        result = self.proxy.har
+        return result['log']['entries']
+        # for entry in result['log']['entries']:
+        #     url = entry['request']['url']
+        #     if "thor" in url:
+        #         response = entry['response']
+        #         print(url)
+        #         print(response)

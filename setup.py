@@ -23,9 +23,9 @@ setup(
   license = "MIT",
   packages = find_packages(),
   include_package_data=True,
-  package_data = {'uitester':['javascript/*']},
+  package_data = {'uitester':['javascript/*','bin/*/*/*/*','bin/*/*/*','bin/*/*','bin/*']},
   zip_safe=True,
-  install_requires = ["selenium","fire","pytest"],
+  install_requires = ["selenium","fire","pytest","browsermob-proxy"],
   entry_points={
         'console_scripts':[
         'uitester = uitester:cli'

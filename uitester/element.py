@@ -1,6 +1,9 @@
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.keys import Keys
 from .common import timethis
+from allure_commons.types import AttachmentType
+import allure
+import time
 
 class WebElement(object):
     """
@@ -68,9 +71,10 @@ class WebElement(object):
         for i in range(30):
             try:
                 self.elem.click()
+                # allure.attach(self.driver.get_screenshot_as_png(), name="点击元素", attachment_type=AttachmentType.PNG)
                 return True
             except Exception as e:
-                self.save_screenshot('ERROR.png')
+                print(e)
             time.sleep(1)
         raise Exception("CAN'T CLICK")
 

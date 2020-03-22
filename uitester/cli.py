@@ -4,10 +4,11 @@ import time
 
 
 class UiTester(object):
-    def init(self):
-        print(123)
-    def start(self,filename):
-        os.system("pytest " + filename)
+
+    def start(self,filename = None):
+        os.system("pytest --alluredir=report/result " + filename)
+        # os.system("allure generate report/xml -o report/html --clean")
+        os.system("allure serve report/result")
 
     def server(self,order):
         if order == "start":
