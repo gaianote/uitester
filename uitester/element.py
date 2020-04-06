@@ -91,3 +91,6 @@ class WebElement(object):
             scroll_elem.send_keys(Keys.PAGE_UP)
         if method == "pagedown":
             scroll_elem.send_keys(Keys.PAGE_DOWN)
+    @property
+    def value(self):
+        return self.elem.get_attribute("value")

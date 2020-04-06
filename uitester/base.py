@@ -9,16 +9,18 @@ from .common import Logger,data,Singleton,timethis
 from .element import WebElement
 from browsermobproxy import Server
 
-class WebDriver(metaclass=Singleton):
+class WebDriver():
 
-    def __init__(self):
+    def __init__(self,proxy_ip=None):
 
         self.logger = Logger("pywebdriver")
 
         options = webdriver.ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['enable-automation'])
-        self.start_server()
-        options.add_argument('--proxy-server={0}'.format(self.proxy.proxy))
+        # self.start_server()
+        if proxy_ip:
+            options.add_argument('--proxy-server={0}'.format(proxy_ip))
+        # 禁止弹窗
         self.driver = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub',
             desired_capabilities=DesiredCapabilities.CHROME,
             options=options)
@@ -45,7 +47,7 @@ class WebDriver(metaclass=Singleton):
         return self.driver.execute_script(js,*args)
 
     @timethis
-    def query(self,innerText=None,locator=None,locator_text=None,css=None,parts=None,timeout=100,index=0,exit=True,**kwargs):
+    def query(self,innerText=None,locator=None,locator_text=None,css=None,parts=None,timeout=30,index=0,exit=True,**kwargs):
         '''
         返回选中的元素，并保存选中的元素到self.elem
         ARGS:
@@ -133,7 +135,7 @@ class WebDriver(metaclass=Singleton):
     def quit(self):
         self.logger.info("BROWSER CLOSE")
         data.is_quit = True
-        self.server.stop()
+        # self.server.stop()
         # ps -ef|grep browsermob|grep -v grep|awk '{print $2}'|xargs kill -9
         self.driver.quit()
 
@@ -153,6 +155,9 @@ class WebDriver(metaclass=Singleton):
         # driver.close()
         # #不关闭，要移动到上一个页面，我们要移动句柄
         # driver.switch_to_window(driver.window_handles[0])
+    def switch(self,index):
+        self.driver.switch_to_window(self.driver.window_handles[index])
+
     def delete_all_cookies(self):
         self.logger.info("CLEAR ALL COOKIES")
         self.driver.delete_all_cookies()
@@ -176,3 +181,9 @@ class WebDriver(metaclass=Singleton):
         #         response = entry['response']
         #         print(url)
         #         print(response)
+    def accept(self):
+        alert = self.driver.switch_to_alert()
+        alert.accept()
+
+
+
