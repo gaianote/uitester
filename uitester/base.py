@@ -11,22 +11,30 @@ from browsermobproxy import Server
 
 class WebDriver():
 
-    def __init__(self,proxy_ip=None):
+    def __init__(self,proxy_ip=None,headless=None,debug=None):
 
         self.logger = Logger("pywebdriver")
 
         options = webdriver.ChromeOptions()
-        options.add_experimental_option('excludeSwitches', ['enable-automation'])
+        
         # self.start_server()
         if proxy_ip:
             options.add_argument('--proxy-server={0}'.format(proxy_ip))
-        # 禁止弹窗
+        if headless:
+            options.add_argument("--headless") 
+        if debug:
+            options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
+        else:
+            options.add_experimental_option('excludeSwitches', ['enable-automation'])
+    
         self.driver = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub',
             desired_capabilities=DesiredCapabilities.CHROME,
             options=options)
         self.driver.run_js = self.run_js
-
-
+        # add method
+        self.get_screenshot_as_png = self.driver.get_screenshot_as_png
+        self.save_screenshot = self.driver.save_screenshot
+        self.refresh = self.driver.refresh
     def run_js(self,func,*args,script="query.js"):
         """
         调用avascript文件内的函数
@@ -184,6 +192,8 @@ class WebDriver():
     def accept(self):
         alert = self.driver.switch_to_alert()
         alert.accept()
+
+
 
 
 

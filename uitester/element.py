@@ -16,6 +16,11 @@ class WebElement(object):
         self.driver = selenium_driver
         self.elem = selenium_elem
 
+        # add property
+        self.location = selenium_elem.location
+        self.size = selenium_elem.size
+        self.screenshot = selenium_elem.screenshot
+
     @timethis
     def select(self,text=None,index=None,value=None):
         if text:
@@ -94,3 +99,7 @@ class WebElement(object):
     @property
     def value(self):
         return self.elem.get_attribute("value")
+        
+    @property
+    def src(self):
+        return self.elem.get_attribute("src")
