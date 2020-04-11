@@ -11,23 +11,42 @@ from browsermobproxy import Server
 
 class WebDriver():
 
-    def __init__(self,proxy_ip=None,headless=None,debug=None):
+    def __init__(self,proxy_ip=None,headless=None,debug=None,mobile=None,imagesless=None,user_data=None,cache=True,remote_server="127.0.0.1:4444"):
 
         self.logger = Logger("pywebdriver")
 
         options = webdriver.ChromeOptions()
-        
+        options.add_argument('user-agent=""Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"')
+
         # self.start_server()
         if proxy_ip:
             options.add_argument('--proxy-server={0}'.format(proxy_ip))
         if headless:
-            options.add_argument("--headless") 
+            options.add_argument("--headless")
         if debug:
             options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
         else:
             options.add_experimental_option('excludeSwitches', ['enable-automation'])
-    
-        self.driver = webdriver.Remote(command_executor='http://127.0.0.1:4444/wd/hub',
+        if mobile:
+            # "Nexus 5"
+            # 'iPhone 6'
+            options.add_experimental_option("mobileEmulation", {'deviceName':mobile })
+        if user_data:
+            print("ok")
+            user_data = "/Users/liyunpeng/Library/Application Support/Google/Chrome/Profile 10"
+            options.add_argument('--user-data-dir="{}"'.format(user_data))
+        if cache:
+            cache = "~/Library/Application\ Support/Google/Chrome/Default/Application\ Cache"
+            options.add_argument('--disk-cache-dir="{}"'.format(user_data))
+        if imagesless:
+            prefs = {
+                'profile.default_content_setting_values': {
+                    'images': 2
+                }
+            }
+            options.add_experimental_option('prefs', prefs)
+
+        self.driver = webdriver.Remote(command_executor='http://{}/wd/hub'.format(remote_server),
             desired_capabilities=DesiredCapabilities.CHROME,
             options=options)
         self.driver.run_js = self.run_js
