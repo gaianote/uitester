@@ -119,7 +119,7 @@ class WebDriver():
         if exit:
             self.driver.save_screenshot('ERROR.png')
             error_msg = 'can not find Element {} in {} s'.format(innerText or css or parts,timeout)
-            self.logger.error('ERROR: ' + error_msg)
+            print('ERROR: ' + error_msg)
             raise Exception(error_msg)
         else:
             return False
@@ -155,11 +155,13 @@ class WebDriver():
             return json.loads(result)
 
     def get(self,url):
-        self.logger.info("GET URL: " + url)
+        # self.logger.info("GET URL: " + url)
+        print("GET URL: " + url)
         self.driver.get(url)
 
     def quit(self):
-        self.logger.info("BROWSER CLOSE")
+        # self.logger.info("BROWSER CLOSE")
+        print("BROWSER CLOSE")
         data.is_quit = True
         # self.server.stop()
         # ps -ef|grep browsermob|grep -v grep|awk '{print $2}'|xargs kill -9

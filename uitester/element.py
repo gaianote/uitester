@@ -1,8 +1,7 @@
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.keys import Keys
 from .common import timethis
-from allure_commons.types import AttachmentType
-import allure
+
 import time
 
 class WebElement(object):
@@ -99,7 +98,7 @@ class WebElement(object):
     @property
     def value(self):
         return self.elem.get_attribute("value")
-        
+
     @property
     def src(self):
         return self.elem.get_attribute("src")
